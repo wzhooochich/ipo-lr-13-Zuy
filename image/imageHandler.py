@@ -1,44 +1,51 @@
 from PIL import Image
-from image.imageProcessor import ImageProcessor
+import os
 
 class ImageHandler:
     def __init__(self, image_path):
-        try:
-            self.image = Image.open(image_path)
-        except FileNotFoundError:
-            print(f"Error: File not found at path: {image_path}")
-            self.image = None
-        except Exception as e:
-            print(f"Error opening image: {e}")
-            self.image = None
+        self.image_path = image_path
+        self.image = None
 
-    def save(self, output_path, format="JPEG"):
+    def load_image(self):
+         try:
+            self.image = Image.open(self.image_path)
+            return self.image
+         except FileNotFoundError:
+            print(f"Error: File not found at path: {self.image_path}")
+            self.image = None
+            raise FileNotFoundError
+
+    def save_image(self, save_path):
         if self.image:
-            self.image.save(output_path, format)
+            self.image.save(save_path)
         else:
-            print("No image to save.")
+            print("Изображение не загружено!")
 
-    def rotate(self, angle=45, save_path="rotated.jpg"):
+    def convert_to_png(self, save_path):
+        """
+        Конвертировать изображение в формат PNG.
+        """
+        if self.image:
+            self.image = self.image.convert("RGBA")
+            self.image.save(save_path, "PNG")
+        else:
+            print("Изображение не загружено!")
+
+    def rotate_image(self, angle=45):
         """
         Повернуть изображение на указанный угол.
         """
         if self.image:
             self.image = self.image.rotate(angle, expand=True)
-            self.save(save_path)
+        else:
+            print("Изображение не загружено!")
+
+    def get_image(self):
+        """
+        Получить текущее изображение.
+        """
+        if self.image:
             return self.image
         else:
             print("Изображение не загружено!")
             return None
-    
-    def apply_sharpen(self):
-        processor = ImageProcessor(self.image)
-        self.image = processor.sharpen()
-        return self.image
-    
-    def apply_border(self, border_width=15, border_color="black"):
-        processor = ImageProcessor(self.image)
-        self.image = processor.border(border_width, border_color)
-        return self.image
-    
-    def get_image(self):
-      return self.image
