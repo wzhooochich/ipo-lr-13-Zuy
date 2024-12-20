@@ -1,8 +1,8 @@
 from image import ImageHandler
 from image import ImageProcessor
+import os
 
 def main_menu():
-    # Функция для отображения меню и получения выбора пользователя
     print()
     print(" Меню работы с изображением ".center(80,"="))
     print("1. Конвертировать изображение в формат PNG")
@@ -14,54 +14,61 @@ def main_menu():
     return input("Выберите действие: ")
 
 def main():
-    # Основная функция программы
-    # Исходное изображение передаётся в коде
-    initial_image_path = "input.jpg"  # Укажите путь к вашему изображению
+    images_dir = "images"
+    if not os.path.exists(images_dir):
+        os.makedirs(images_dir)
+
+    initial_image_path = "input.jpg" 
     handler = ImageHandler(initial_image_path)
     if handler.image is None:
         print("Ошибка: Не удалось загрузить изображение.")
         return
     print("Изображение успешно загружено из пути:", initial_image_path)
-    processor = ImageProcessor(handler.get_image())
+    processor = ImageProcessor(handler.image)
 
     while True:
-        choice = main_menu()  # Отображение меню и получение выбора пользователя
+        choice = main_menu() 
 
         if choice == "1":
             # Конвертация изображения в формат PNG
-            save_path = input("Введите путь для сохранения (с расширением .png): ")
+            save_path = input("Введите имя файла для сохранения (с расширением .png): ")
+            save_path = f"images/{save_path}"
             handler.save(save_path, format="PNG")
             print(f"Изображение сохранено в формате PNG по пути {save_path}.")
 
 
         elif choice == "2":
             # Поворот изображения на 45 градусов
-            rotated_image = handler.rotate(45, "rotated.jpg")
+            rotated_image = handler.rotate(45)
             if rotated_image is not None:
-                processor = ImageProcessor(handler.get_image())
-                print("Изображение повернуто на 45 градусов и сохранено в rotated.jpg.")
+                handler.image = rotated_image
+                processor = ImageProcessor(handler.image)
+                print("Изображение повернуто на 45 градусов")
             else:
                 print ("Ошибка при повороте изображения.")
 
         elif choice == "3":
             # Применение фильтра резкости
-            if processor.img:
+            if handler.image:
                 handler.apply_sharpen()
+                processor = ImageProcessor(handler.image)
                 print("Фильтр резкости применён.")
             else:
                 print("Изображение не загружено.")
 
         elif choice == "4":
             # Добавление рамки к изображению
-             if processor.img:
+             if handler.image:
                 handler.apply_border()
+                processor = ImageProcessor(handler.image)
                 print("Рамка добавлена.")
              else:
                 print("Изображение не загружено.")
 
         elif choice == "5":
             # Сохранение изображения
-            save_path = input("Введите путь для сохранения обработанного изображения: ")
+            save_path = input("Введите имя файла для сохранения (например, output.png): ")
+            save_path = f"images/{save_path}"
             handler.save(save_path)
             print(f"Изображение сохранено по пути {save_path}.")
 
