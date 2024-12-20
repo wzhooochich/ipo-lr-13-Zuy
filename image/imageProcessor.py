@@ -1,29 +1,37 @@
 from PIL import ImageFilter, Image, ImageOps
 
 class ImageProcessor:
-    def __init__(self, img):
-        self.img = img
+    def __init__(self, image):
+        self.image = image
 
-    def sharpen(self):
+    def apply_sharpen_filter(self):
         """
         Применить фильтр резкости к изображению.
         """
-        if self.img:
-            if self.img.mode not in ("RGB", "RGBA"):
-               img = self.img.convert("RGB") 
-            else:
-               img = self.img
-            return img.filter(ImageFilter.SHARPEN)
+        if self.image:
+             if self.image.mode not in ("RGB", "RGBA"):
+                img = self.image.convert("RGB")
+             else:
+                img = self.image
+             self.image = img.filter(ImageFilter.SHARPEN)
         else:
             print("Изображение не загружено!")
-            return self.img
     
-    def border(self, border_width=15, border_color="black"):
-         """
-         Добавить рамку вокруг изображения.
-         """
-         if self.img:
-             return ImageOps.expand(self.img, border=border_width, fill=border_color)
-         else:
-              print("Изображение не загружено!")
-              return self.img
+    def add_border(self):
+        """
+        Добавить рамку вокруг изображения.
+        """
+        if self.image:
+            self.image = ImageOps.expand(self.image, border=15, fill="black")
+        else:
+            print("Изображение не загружено!")
+    
+    def get_image(self):
+        """
+        Получить текущее изображение.
+        """
+        if self.image:
+            return self.image
+        else:
+            print("Изображение не загружено!")
+            return None
