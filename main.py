@@ -16,9 +16,7 @@ def main_menu():
     return input("Выберите действие: ")
 
 def main():
-    # Основная функция программы
-    # Исходное изображение передаётся в коде
-    initial_image_path = "image_5.jpg"  # Укажите путь к вашему изображению
+    initial_image_path = "image_5.jpg"  
     handler = ImageHandler(initial_image_path)
     try:
         handler.load_image()
