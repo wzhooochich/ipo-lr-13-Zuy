@@ -34,4 +34,4 @@ class ImageProcessor:
             return self.image
         else:
             print("Изображение не загружено!")
-            return None
+
