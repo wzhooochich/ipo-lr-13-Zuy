@@ -48,4 +48,4 @@ class ImageHandler:
             return self.image
         else:
             print("Изображение не загружено!")
-            return None
+            
